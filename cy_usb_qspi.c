@@ -50,13 +50,19 @@ static const cy_stc_smif_config_t qspiConfig =
     .blockEvent = (uint32_t)CY_SMIF_BUS_ERROR,
 };
 
-/*
-Function     : Cy_SPI_FlashReset ()
-Description  : Send reset command to selected flash.   
-Parameters  :  cy_en_flash_index_t flashIndex 
-Return      :  cy_en_smif_status_t  
-
-*/
+/*******************************************************************************
+* Function name: Cy_SPI_FlashReset(cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to send reset command to selected flash
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \return
+* status
+*
+********************************************************************************/
 static cy_en_smif_status_t Cy_SPI_FlashReset(cy_en_flash_index_t flashIndex)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -89,7 +95,24 @@ static cy_en_smif_status_t Cy_SPI_FlashReset(cy_en_flash_index_t flashIndex)
     return status;
 }
 
+/*******************************************************************************
+* Function name: Cy_SPI_AddressToArray(uint32_t value, uint8_t *byteArray,uint8_t numAddressBytes)
+****************************************************************************//**
+*
+* Description: Function to convert 32-nit value to byte array
+* \param value
+* 32-bit value to be converted
+*
+* \param byteArray
+* Pointer to byte array
 
+* \param numAddressBytes
+* Number of bytes
+*
+* \return
+* status
+*
+********************************************************************************/
 void Cy_SPI_AddressToArray(uint32_t value, uint8_t *byteArray,uint8_t numAddressBytes)
 {
     do
@@ -100,6 +123,21 @@ void Cy_SPI_AddressToArray(uint32_t value, uint8_t *byteArray,uint8_t numAddress
     } while (numAddressBytes > 0U);
 }
 
+/*******************************************************************************
+* Function name: Cy_App_QSPIStatus1Read(cy_en_smif_slave_select_t slaveSelect)
+****************************************************************************//**
+*
+* Description: Function to read status1 register of selected SPI flash
+* 32-bit value to be converted
+*
+* \param slaveSelect
+* SPI Flash Index
+*
+*
+* \return
+* register value
+*
+********************************************************************************/
 uint8_t Cy_App_QSPIStatus1Read(cy_en_smif_slave_select_t slaveSelect)
 {
     uint8_t statusVal = 0;
@@ -118,6 +156,21 @@ uint8_t Cy_App_QSPIStatus1Read(cy_en_smif_slave_select_t slaveSelect)
     return statusVal;
 }
 
+/*******************************************************************************
+* Function name: Cy_App_QSPIStatus2Read(cy_en_smif_slave_select_t slaveSelect)
+****************************************************************************//**
+*
+* Description: Function to read status2 register of selected SPI flash
+* 32-bit value to be converted
+*
+* \param slaveSelect
+* SPI Flash Index
+*
+*
+* \return
+* register value
+*
+********************************************************************************/
 uint8_t Cy_App_QSPIStatus2Read(cy_en_smif_slave_select_t slaveSelect)
 {
     uint8_t statusVal = 0;
@@ -137,13 +190,20 @@ uint8_t Cy_App_QSPIStatus2Read(cy_en_smif_slave_select_t slaveSelect)
 }
 
 
-/*
-Function     : Cy_SPI_WriteEnable ()
-Description :  Set write enable latch of the selected flash. This is needed before doing program and erase operations.
-Parameters  :  cy_en_flash_index_t flashIndex 
-Return      :  cy_en_smif_status_t  
-
-*/
+/*******************************************************************************
+* Function name: Cy_QSPI_WriteEnable(cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to Set write enable latch of the selected flash. 
+*              This is needed before doing program and erase operations.
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \return
+* status
+*
+********************************************************************************/
 static cy_en_smif_status_t Cy_QSPI_WriteEnable(cy_en_flash_index_t flashIndex)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -198,6 +258,22 @@ static cy_en_smif_status_t Cy_QSPI_WriteEnable(cy_en_flash_index_t flashIndex)
     return status;
 }
 
+/*******************************************************************************
+* Function name: Cy_QSPI_ReadID(cy_en_smif_slave_select_t slaveSelect, uint8_t *idBuffer)
+****************************************************************************//**
+*
+* Description: Function to read sSPI Flash ID
+*
+* \param slaveSelect
+* SPI Flash Index
+*
+** \param idBuffer
+* ID buffer pointer
+*
+* \return
+* void
+*
+********************************************************************************/
 void Cy_QSPI_ReadID(cy_en_smif_slave_select_t slaveSelect, uint8_t *idBuffer)
 {
     Cy_SMIF_TransmitCommand(SMIF0,
@@ -216,13 +292,19 @@ void Cy_QSPI_ReadID(cy_en_smif_slave_select_t slaveSelect, uint8_t *idBuffer)
     DBG_APP_TRACE("SLV%d:QSPI ID:",slaveSelect-1);
 }
 
-/*
-Function     : Cy_SPI_IsMemBusy ()
-Description :  Check if Write In Progress (WIP) bit of the flash is cleared.
-Parameters  :  cy_en_flash_index_t flashIndex 
-Return      :  bool  
-
-*/
+/*******************************************************************************
+* Function name: Cy_QSPI_IsMemBusy(cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to check if Write In Progress (WIP) bit of the flash is cleared
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \return
+* status
+*
+********************************************************************************/
 bool Cy_QSPI_IsMemBusy(cy_en_flash_index_t flashIndex)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -256,14 +338,22 @@ bool Cy_QSPI_IsMemBusy(cy_en_flash_index_t flashIndex)
     return ((statusVal & 0x01) == 0x01);
 }
 
-/*
-Function     : Cy_SPI_ReadConfigRegister ()
-Description :   Read selected flash's config register
-Parameters  :  cy_en_flash_index_t flashIndex, uint8_t *readValue 
-Return      :  cy_en_smif_status_t  
-
-*/
-
+/*******************************************************************************
+* Function name: Cy_SPI_ReadConfigRegister(cy_en_flash_index_t flashIndex, uint8_t *readValue)
+****************************************************************************//**
+*
+* Description: Function to read selected flash's config register
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \param readValue
+* Pointer to read data
+*
+* \return
+* status
+*
+********************************************************************************/
 static cy_en_smif_status_t Cy_SPI_ReadConfigRegister(cy_en_flash_index_t flashIndex, uint8_t *readValue)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -294,7 +384,22 @@ static cy_en_smif_status_t Cy_SPI_ReadConfigRegister(cy_en_flash_index_t flashIn
     return status;
 }
 
-
+/*******************************************************************************
+* Function name: Cy_QSPI_ReadAnyRegister(cy_en_flash_index_t flashIndex,uint32_t address)
+****************************************************************************//**
+*
+* Description: Function to read selected flash's register
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \param address
+* register address
+*
+* \return
+* register value
+*
+********************************************************************************/
 static uint8_t Cy_QSPI_ReadAnyRegister(cy_en_flash_index_t flashIndex,uint32_t address)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -327,14 +432,25 @@ static uint8_t Cy_QSPI_ReadAnyRegister(cy_en_flash_index_t flashIndex,uint32_t a
     return regValue;
 }
 
-
-/*
-Function     : Cy_SPI_WriteAnyRegister ()
-Description :  Write to register address of the selected flash
-Parameters  :  cy_en_flash_index_t flashIndex,uint32_t regAddress, uint8_t value 
-Return      :  cy_en_smif_status_t   
-
-*/
+/*******************************************************************************
+* Function name: Cy_QSPI_ReadAnyRegister(cy_en_flash_index_t flashIndex,uint32_t address)
+****************************************************************************//**
+*
+* Description: Function to write to register address of the selected flash
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \param address
+* register address
+*
+* \param value
+* register value
+*
+* \return 
+* status
+*
+********************************************************************************/
 
 static cy_en_smif_status_t  Cy_QSPI_WriteAnyRegister(cy_en_flash_index_t flashIndex,uint32_t regAddress, uint8_t value)
 {
@@ -373,13 +489,23 @@ static cy_en_smif_status_t  Cy_QSPI_WriteAnyRegister(cy_en_flash_index_t flashIn
     return status;
 }
 
-/*
- * Function     :   Cy_SPI_ReadCFIMap  
- * Description  :   Read Common Flash Interface (CFI) Table
- * Parameters   :   cy_stc_cfi_flash_map_t *cfiFlashMap, cy_en_flash_index_t flashIndex
- * Return       :   cy_en_smif_status_t  
- */
-
+/*******************************************************************************
+* Function name: Cy_SPI_ReadCFIMap(cy_stc_cfi_flash_map_t *cfiFlashMap, cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to read Common Flash Interface (CFI) Table
+*
+*
+* \param cfiFlashMap
+* CFI Flash Table pointer
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \return 
+* status
+*
+********************************************************************************/
 static cy_en_smif_status_t Cy_SPI_ReadCFIMap (cy_stc_cfi_flash_map_t *cfiFlashMap, cy_en_flash_index_t flashIndex)
 {
     uint8_t sectorIndex = 0;
@@ -454,6 +580,22 @@ static cy_en_smif_status_t Cy_SPI_ReadCFIMap (cy_stc_cfi_flash_map_t *cfiFlashMa
     return status;
 }
 
+/*******************************************************************************
+* Function name: Cy_SPI_ReadID(uint8_t *rxBuffer, cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to read SPI Flash ID
+*
+* \param flashIndex
+* SPI Flash Index
+*
+** \param rxBuffer
+* ID buffer pointer
+*
+* \return
+* void
+*
+********************************************************************************/
 cy_en_smif_status_t Cy_SPI_ReadID(uint8_t *rxBuffer, cy_en_flash_index_t flashIndex)
 {
     DBG_APP_TRACE("Cy_SPI_ReadID Init \n\r");
@@ -481,15 +623,33 @@ cy_en_smif_status_t Cy_SPI_ReadID(uint8_t *rxBuffer, cy_en_flash_index_t flashIn
     return status;
 }
 
-/* Initialize the SPI Flash - 
- * Quad Mode - Data in x4 mode, Command in x1 mode
- * QPI Mode - Data in x4 mode, Command in x4 mode
- *
- * QPI enabled implies Quad enable.
- *
- * Enable only Quad mode when writes to flash can be in x1 mode and only reads need to be in x4 mode (eg: Passive x4 mode with one x4 flash memory)
- * Enable QPI mode when writes and reads should be in x4 mode (eg: Passive x8 mode with two x4 flash memories)
- * */
+/*******************************************************************************
+* Function name: Cy_SPI_FlashInit(cy_en_flash_index_t flashIndex, bool quadEnable, bool qpiEnable)
+****************************************************************************//**
+*
+* Description: Function to initialize SPI Flash
+*
+* Quad Mode - Data in x4 mode, Command in x1 mode
+* QPI Mode - Data in x4 mode, Command in x4 mode
+*
+* QPI enabled implies Quad enable.
+*
+* Enable only Quad mode when writes to flash can be in x1 mode and only reads need to be in x4 mode (eg: Passive x4 mode with one x4 flash memory)
+* Enable QPI mode when writes and reads should be in x4 mode (eg: Passive x8 mode with two x4 flash memories)
+*
+* \param flashIndex
+* SPI Flash Index
+*
+* \param quadEnable
+* Quad Mode enable
+
+* \param qpiEnable
+* QPI mode enable
+*
+* \return
+* status
+*
+********************************************************************************/
 cy_en_smif_status_t Cy_SPI_FlashInit (cy_en_flash_index_t flashIndex, bool quadEnable, bool qpiEnable)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -533,13 +693,28 @@ cy_en_smif_status_t Cy_SPI_FlashInit (cy_en_flash_index_t flashIndex, bool quadE
     return status;
 }
 
-/*
-Function     : Cy_SPI_ReadOperation ()
-Description :  Perform Read operation from the flash in Register mode.
-Parameters  :  uint32_t address, uint8_t *rxBuffer, uint32_t length, cy_en_flash_index_t flashIndex 
-Return      :  cy_en_smif_status_t  
-
-*/
+/*******************************************************************************
+* Function name: Cy_QSPI_Read(uint32_t address, uint8_t *rxBuffer, uint32_t length, 
+                             cy_en_flash_index_t flashIndex)
+****************************************************************************//**
+*
+* Description: Function to read the SPI Flash
+*
+* \param address
+* SPI Flash address
+*
+* \param rxBuffer
+* Data buffer pointer
+*
+* \param length
+* length of data received
+* \param flashIndex
+* SPI Flash index
+*
+* \return
+* status
+*
+********************************************************************************/
 
 cy_en_smif_status_t Cy_QSPI_Read(uint32_t address, uint8_t *rxBuffer, uint32_t length, cy_en_flash_index_t flashIndex)
 {
@@ -588,8 +763,22 @@ cy_en_smif_status_t Cy_QSPI_Read(uint32_t address, uint8_t *rxBuffer, uint32_t l
     return status;
 }
 
-
-/* Start the QSPI/SMIF block*/
+/*******************************************************************************
+* Function name: Cy_QSPI_Start(cy_stc_usb_app_ctxt_t *pAppCtxt,cy_stc_hbdma_buf_mgr_t *hbw_bufmgr)
+****************************************************************************//**
+*
+* Description: Function to start the QSPI/SMIF block
+*
+* \param pAppCtxt
+* application layer context pointer
+*
+* \param hbw_bufmgr
+* HBDMA buffer manager pointer
+*
+* \return
+* status
+*
+********************************************************************************/
 void Cy_QSPI_Start(cy_stc_usb_app_ctxt_t *pAppCtxt,cy_stc_hbdma_buf_mgr_t *hbw_bufmgr)
 {
     cy_en_smif_status_t status = CY_SMIF_SUCCESS;
@@ -618,7 +807,20 @@ void Cy_QSPI_Start(cy_stc_usb_app_ctxt_t *pAppCtxt,cy_stc_hbdma_buf_mgr_t *hbw_b
     DBG_APP_TRACE("Cy_USB_QSPIEnabled \n\r:");
 }
 
-/* Configure SMIF pins*/
+/*******************************************************************************
+* Function name: Cy_QSPI_ConfigureSMIFPins(bool init)
+****************************************************************************//**
+*
+* Description: Function to configure SMIF pins
+*
+* \param init
+* initialize SMIF pins if true
+*
+*
+* \return
+* void
+*
+********************************************************************************/
 void Cy_QSPI_ConfigureSMIFPins(bool init)
 {
     cy_en_gpio_status_t status = CY_GPIO_SUCCESS;
@@ -812,7 +1014,23 @@ void Cy_QSPI_ConfigureSMIFPins(bool init)
 
 }
 
-/* Initialize FPGA Configuration pins*/
+/*******************************************************************************
+* Function name: Cy_FPGAConfigPins(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_fpgaConfigMode_t mode)
+****************************************************************************//**
+*
+* Description: Function to initialize FPGA configuration pins
+*
+* \param pAppCtxt
+* application layer context pointer
+*
+* \param mode
+* fpga configuration mode
+*
+*
+* \return
+* void
+*
+********************************************************************************/
 void Cy_FPGAConfigPins(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_fpgaConfigMode_t mode)
 {
     cy_en_gpio_status_t status = CY_GPIO_SUCCESS;
@@ -878,7 +1096,23 @@ void Cy_FPGAConfigPins(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_fpgaConfigMode_t m
     ASSERT_NON_BLOCK(status == CY_GPIO_SUCCESS, status);
 }
 
-/* Configure FPGA*/
+/*******************************************************************************
+* Function name: Cy_FPGAConfigure(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_fpgaConfigMode_t mode)
+****************************************************************************//**
+*
+* Description: Function to initialize initiate FPGA configuration
+*
+* \param pAppCtxt
+* application layer context pointer
+*
+* \param mode
+* fpga configuration mode
+*
+*
+* \return
+* void
+*
+********************************************************************************/
 bool Cy_FPGAConfigure(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_fpgaConfigMode_t mode)
 {
     uint32_t cdoneVal = 0;

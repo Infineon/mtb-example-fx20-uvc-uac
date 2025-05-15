@@ -37,6 +37,7 @@
 #include "cy_debug.h"
 
 #if AUDIO_IF_EN
+#define STEREO_ENABLE  (1)
 
 /* Set to 1 to enable internal test data generation instead of connection to the PDM microphone. */
 #define PDM_TEST_GEN_EN (0u)
@@ -188,7 +189,8 @@ void Cy_PDM_AppMxPdmDeinit (void)
  *  buffers.
  *
  * Parameters:
- *  pAppCtxt: Pointer to application context structure.
+ *  \param pAppCtxt
+ * Pointer to application context structure.
  *
  * Return:
  *  void
@@ -214,7 +216,8 @@ static void Cy_PDM_AppDmaReadCompletion (cy_stc_usb_app_ctxt_t *pAppCtxt)
  *  the USB 2.x EPM buffers.
  *
  * Parameters:
- *  pAppCtxt: Pointer to application context structure.
+ *  \param pAppCtxt 
+ * Pointer to application context structure.
  *
  * Return:
  *  void
@@ -319,7 +322,8 @@ void Cy_PDM_InEpDma_ISR (void)
  *  data out from the PDM receive FIFOs.
  *
  * Parameters:
- *  enable: Whether the interrupts are to be enabled or disabled.
+ *  \param enable
+ * Whether the interrupts are to be enabled or disabled.
  *
  * Return:
  *  void
@@ -365,7 +369,8 @@ void Cy_UAC_AppInitDmaIntr (bool enable)
  *  starts reading data out before the PDM receive FIFOs start getting filled.
  *
  * Parameters:
- *  xTimer: Handle of timer trigger the PDM channel activation.
+ *  \param xTimer
+ * Handle of timer trigger the PDM channel activation.
  *
  * Return:
  *  void
@@ -386,8 +391,11 @@ void Cy_PDM_AppChannelActivateTimerCb (TimerHandle_t xTimer)
  * buffers allocated as part of DMA channels.
  *
  * Parameters:
- *  pAppCtxt: Pointer to application context structure.
- *  dataLength: Length of data (in bytes) to read from each RX FIFO.
+ *  \param pAppCtxt
+ * Pointer to application context structure.
+ * 
+ *  \param dataLength 
+ * Length of data (in bytes) to read from each RX FIFO.
  *
  * Return:
  *  void
@@ -502,9 +510,14 @@ void Cy_PDM_AppQueueRead (cy_stc_usb_app_ctxt_t *pAppCtxt,
  * through the IN endpoint.
  *
  * Parameters:
- *  pAppCtxt: Pointer to application context structure.
- *  dataBuf_p: Pointer to data buffer.
- *  dataLength: Length of data to be sent.
+ *  \param pAppCtxt
+ * Pointer to application context structure.
+ * 
+ *  \param dataBuf_p
+ *  Pointer to data buffer.
+ * 
+ *  \param dataLength
+ * Length of data to be sent.
  *
  * Return:
  *  void
@@ -549,7 +562,8 @@ Cy_UAC_AppPDMSendData (cy_stc_usb_app_ctxt_t *pAppCtxt,
  *  (UAC) interface.
  *
  * Parameters:
- *  pTaskParam: Opaque pointer which points to the application context structure.
+ *  \param pTaskParam
+ * Opaque pointer which points to the application context structure.
  *
  * Return:
  *  void
@@ -634,8 +648,11 @@ void Cy_UAC_AppDeviceTaskHandler (void *pTaskParam)
  *  Set Interface request handler for the UAC audio streaming interface.
  *
  * Parameters:
- *  pAppCtxt: Pointer to the application context structure.
- *  altSetting: Selected alternate setting for the audio streaming interface.
+ *  \param pAppCtxt 
+ * Pointer to the application context structure.
+ * 
+ *  \param altSetting
+ * Selected alternate setting for the audio streaming interface.
  *
  * Return:
  *  void
@@ -784,7 +801,8 @@ void Cy_UAC_AppSetIntfHandler (cy_stc_usb_app_ctxt_t *pAppCtxt,
  *  Perform all UAC specific application initialization.
  *
  * Parameters:
- *  pAppCtxt: Handle to the application context data structure.
+ *  \param pAppCtxt
+ * Handle to the application context data structure.
  *
  * Return:
  *  void

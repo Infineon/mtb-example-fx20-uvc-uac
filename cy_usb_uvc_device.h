@@ -59,6 +59,7 @@ extern "C" {
 #define CY_USB_UVC_VBUS_CHANGE_DEBOUNCED           (0x0F)
 #define CY_USB_UVC_VIDEO_STREAMING_START           (0x10)
 #define CY_USB_UVC_DEVICE_SET_CUR_RQT              (0x11)
+#define CY_USB_UVC_DEVICE_GET_CUR_RQT              (0x12)
 #define CY_USB_UVC_VIDEO_STREAM_STOP_EVENT         (0x16)
 #define CY_USB_PRINT_FPS                           (0x17)
 

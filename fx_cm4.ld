@@ -19,7 +19,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2021-2022 Cypress Semiconductor Corporation
+* Copyright (2024) Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,8 +59,10 @@ MEMORY
     /* The ram and flash regions control RAM and flash memory allocation for the CM4 core.
      * Note that 2176 bytes of RAM (at the end of the SRAM) are reserved for system use.
      * Using this memory region for other purposes will lead to unexpected behavior.
+     *
+     * The first 2 KB of System RAM is reserved for usage by the CM0+ application.
      */
-    ram               (rwx)   : ORIGIN = 0x08000000, LENGTH = 0x1F780
+    ram               (rwx)   : ORIGIN = 0x08002000, LENGTH = 0x1D780
     flash             (rx)    : ORIGIN = 0x10000000, LENGTH = 0x80000
     dmabuf            (rwx)   : ORIGIN = 0x1C004000, LENGTH = 0x0C000
 

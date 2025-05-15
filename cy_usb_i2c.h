@@ -33,7 +33,7 @@
 }
 #endif
 
-#define FPGASLAVE_ADDR                   (0x0D)        //FPGA i2c address (Do not change)
+#define FPGASLAVE_ADDR                (0x0D)        //FPGA i2c address (Do not change)
 
 /* I2C Related macro */
 #define I2C_READ                       (1)
@@ -45,16 +45,101 @@
 #define I2C_INCLK_TARGET_FREQ          (3200000)
 
 extern cy_stc_scb_i2c_context_t I2C_context;
+
+/*****************************************************************************
+* Function Name: Cy_USB_I2CInit(void)
+******************************************************************************
+* Summary:
+* I2C Master Init function
+*
+* Parameters:
+*  void
+*
+* Return:
+*  Does not return.
+*****************************************************************************/
 void Cy_USB_I2CInit (void);
-void Cy_I2C_MasterEvent(uint32_t Events);
-cy_en_scb_i2c_status_t Cy_I2C_Read (uint16_t slaveAddress,uint16_t registerAddress,
+
+/*****************************************************************************
+* Function Name: Cy_I2C_MasterEvent(uint32_t events)
+******************************************************************************
+* Summary:
+*  I2C master event callback function, handling various i2c master event
+*
+* Parameters:
+* \param events
+*  i2c master events
+*
+* Return:
+*  Does not return.
+*****************************************************************************/
+void Cy_I2C_MasterEvent(uint32_t events);
+
+/*****************************************************************************
+* Function Name: Cy_I2C_Read(uint16_t slaveAddress,uint16_t registerAddress,
                     uint8_t *data,
                     uint8_t addressWidth,
-                    uint8_t dataWidth);
-cy_en_scb_i2c_status_t Cy_I2C_Write (uint16_t slaveAddress,uint16_t registerAddress,
+                    uint8_t dataWidth)
+******************************************************************************
+* Summary:
+*  Function to read data from i2c slave
+*
+* Parameters:
+* \param slaveAddress
+* 7-bit i2c slave address
+* \param registerAddress
+* i2c slave register address
+* \param data
+* pointer to data receive buffer
+* \param addressWidth
+* address size (in bytes)
+* \param dataWidth
+* data size (in bytes)
+*
+* Return:
+*  0 for read success, error code for unsuccess.
+*****************************************************************************/
+cy_en_scb_i2c_status_t Cy_I2C_Read (uint16_t slaveAddress,uint16_t registerAddress, uint8_t *data, uint8_t addressWidth, uint8_t dataWidth);
+
+/*****************************************************************************
+* Function Name: Cy_I2C_Write(uint16_t slaveAddress,uint16_t registerAddress,
                     uint8_t data,
                     uint8_t addressWidth,
-                    uint8_t dataWidth);
+                    uint8_t dataWidth)
+******************************************************************************
+* Summary:
+* Function to write data to i2c slave 
+*
+* Parameters:
+* \param slaveAddress
+* 7-bit i2c slave address
+* \param registerAddress
+* i2c slave register address
+* \param data
+* pointer to data buffer
+* \param addressWidth
+* address size (in bytes)
+* \param dataWidth
+* data size (in bytes)
+*
+* Return:
+*  0 for read success, error code for unsuccess.
+*****************************************************************************/
+cy_en_scb_i2c_status_t Cy_I2C_Write (uint16_t slaveAddress,uint16_t registerAddress, uint8_t data, uint8_t addressWidth, uint8_t dataWidth);
+
+/*****************************************************************************
+* Function Name: Cy_FPGAGetVersion(cy_stc_usb_app_ctxt_t *pAppCtx)
+******************************************************************************
+* Summary:
+*  Function to read FPGA version
+*
+* Parameters:
+*  \param pAppCtxt
+* application layer context pointer
+*
+* Return:
+* i2c status
+*****************************************************************************/
 cy_en_scb_i2c_status_t Cy_FPGAGetVersion(cy_stc_usb_app_ctxt_t *pAppCtxt);
 
 #if defined(__cplusplus)

@@ -28,7 +28,9 @@
 #include "cy_pdl.h"
 #include <stdint.h>
 
-#if (CY_CPU_CORTEX_M4)
+#if (!CY_CPU_CORTEX_M4)
+#error "INVALID: CM0+ NOT SUPPORTED"
+#endif /* !CY_CPU_CORTEX_M4 */
 
 #if BLOAD_ENABLE
 
@@ -45,18 +47,22 @@ __attribute__ ((section(".cy_app_signature"), used)) const uint8_t cyFx3g2AppSig
 * linker configuration files. The following symbols used by the cymcuelftool.
 *
 *******************************************************************************/
-void Cy_AppVerify_MemorySymbols (void)
-{
-    __asm (
+__asm(
+"Cy_AppVerify_MemorySymbols:\n"
         ".global __cy_app_verify_start\n"
         ".global __cy_app_verify_length\n"
         ".global __cy_app_signature_addr\n"
         ".equ __cy_app_verify_start, 0x10008000\n"
         ".equ __cy_app_verify_length, 0x00077E00\n"
         ".equ __cy_app_signature_addr, 0x1007FE00\n"
-    );
-}
+     );
 #endif /* defined (__ARMCC_VERSION) */
+
+#endif /* BLOAD_ENABLE */
+
+#if (CY_CPU_CORTEX_M4)
+
+#if BLOAD_ENABLE
 
 __attribute__ ((section(".cm0_code"), used))
 const uint32_t Cm0Code[256] = {
@@ -198,7 +204,7 @@ const uint32_t Cm0Code[256] = {
 
 #endif /* BLOAD_ENABLE */
 
-#endif /* CY_CPU_CORTEX_M4 */
+#endif /* (CY_CPU_CORTEX_M4) */
 
 /*[]*/
 
