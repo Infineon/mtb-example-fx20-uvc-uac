@@ -6,7 +6,7 @@ This code example demonstrates the implementation of a USB Video Class (UVC) 1.1
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-fx20-uvc-uac)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyNDA4NjUiLCJTcGVjIE51bWJlciI6IjAwMi00MDg2NSIsIkRvYyBUaXRsZSI6IkVaLVVTQiZ0cmFkZTsgRlgyMDogVVNCIFZpZGVvIENsYXNzIChVVkMpIGFwcGxpY2F0aW9uIiwicmlkIjoic3VrdSIsIkRvYyB2ZXJzaW9uIjoiMS4wLjMiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiV0lSRUQiLCJEb2MgRmFtaWx5IjoiU1NfVVNCIn0=)
+[Provide feedback on this code example.](https://yourvoice.infineon.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyNDA4NjUiLCJTcGVjIE51bWJlciI6IjAwMi00MDg2NSIsIkRvYyBUaXRsZSI6IkVaLVVTQiZ0cmFkZTsgRlgyMDogVVNCIFZpZGVvIENsYXNzIChVVkMpIGFwcGxpY2F0aW9uIiwicmlkIjoic3VtaXQua3VtYXJAaW5maW5lb24uY29tIiwiRG9jIHZlcnNpb24iOiIxLjAuNCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJXSVJFRCIsIkRvYyBGYW1pbHkiOiJTU19VU0IifQ==)
 
 
 ## Requirements
@@ -33,7 +33,16 @@ This example uses the board's default configuration. See the kit user guide to e
 
 This example demonstrates the implementation of a UVC-compliant camera application with the [Titanium Ti180 J484 Development Kit](https://www.efinixinc.com/products-devkits-titaniumti180j484.html) as the video source.
 
-> **Note:** The Titanium Ti180 J484 Development Kit is used for demonstration purposes only. The Ti180 FPGA bitfiles listed in **Table 5** of the [FPGA bitfile information](#fpga-bitfile-information) Section supports up to 4K (3840 x 2160) colorbar video streaming.
+> **Note:** The Titanium Ti180 J484 Development Kit is used for demonstration purposes only. The Ti180 FPGA bitfiles listed in **Table 9** of the [FPGA bitfile information](#fpga-bitfile-information) Section supports up to 4K (3840 x 2160) colorbar video streaming.
+
+Configure the VDDIO jumpers on the KIT_FX20_FMC_001 board according to the interface mode as shown in **Table 1**.
+
+**Table 1. VDDIO jumper settings**
+
+Interface | VDDIO_P0 (J12) | VDDIO_P1 (J13) | VDDIO_CTRL (J10)
+:-------- | :------------- | :------------- | :---------------
+LVDS      | 3.3V           | 3.3V           | 3.3V
+LVCMOS    | 1.8V           | 1.8V           | 1.8V
 
 
 ## Software setup
@@ -143,11 +152,11 @@ For more details, see the [ModusToolbox&trade; tools package user guide](https:/
 
 ### Using this code example with specific manufacturer part numbers (MPNs)
 
-By default, the code example build is targeted for the CYUSB4024-BZXI MPN, which has 512 KB of flash memory and 1024 KB of buffer RAM. Use the **BSP Assistant** tool to modify the application to target different EZ-USB&trade; FX20, EZ-USB&trade; FX10, EZ-USB&trade; FX5N, or EZ-USB&trade; FX5 family MPNs as shown in **Table 1**.
+By default, the code example build is targeted for the CYUSB4024-BZXI MPN, which has 512 KB of flash memory and 1024 KB of buffer RAM. Use the **BSP Assistant** tool to modify the application to target different EZ-USB&trade; FX20, EZ-USB&trade; FX10, EZ-USB&trade; FX5N, or EZ-USB&trade; FX5 family MPNs as shown in **Table 2**.
 
 > **Note:** This application utilizes the Quad SPI interface on the EZ-USB&trade; FX device and hence is not supported on CYUSB4022-FCAXI, CYUSB4012-FCAXI, CYUSB3282-FCAXI, and CYUSB3082-FCAXI devices. It also requires more than 512 KB of DMA buffer RAM and hence is not supported on the CYUSB3081-FCAXI device.
 
-**Table 1. MPNs supported by this code example**
+**Table 2. MPNs supported by this code example**
 
 Part Number       | Family | Flash size (KB) | Buffer RAM size (KB)
 :---------------- | :----- | :-------------- | :-------------------
@@ -163,7 +172,7 @@ CYUSB3083-FCAXI   | FX5    | 512             | 1024
 
 #### Setup for a different MPN
 
-Perform the following steps to modify the code example to work on a different MPN, as listed in **Table 1**:
+Perform the following steps to modify the code example to work on a different MPN, as listed in **Table 2**:
 
 1. Launch the BSP Assistant tool:
 
@@ -247,9 +256,9 @@ The code example and the EZ-USB&trade; FX20 stack output debug log messages indi
 
 By default, the USB FS port is enabled for debug logs. To enable debug logs on UART, set the `USBFS_LOGS_ENABLE` compiler flag to '0u' in the *Makefile* file. SCB1 of the EZ-USB&trade; FX20 device is used as UART with a baud rate of 921600 to send out log messages through the P8.1 pin.
 
-The verbosity of the debug log output can be modified by setting the `DEBUG_LEVEL` macro in the *main.c* file with the values shown in **Table 2**.
+The verbosity of the debug log output can be modified by setting the `DEBUG_LEVEL` macro in the *main.c* file with the values shown in **Table 3**.
 
-**Table 2. Debug values**
+**Table 3. Debug values**
 
 Macro value | Description
 :--------   | :------------
@@ -418,7 +427,7 @@ A pair of microphones in stereo configuration can be connected. By default, the 
 
 The code example uses a synchronous slave FIFO interface when configured in LVCMOS mode. The slave FIFO interface connections are:
 
-**Table 3. Control signal usage in LVCMOS slave FIFO state machine for Port 0**
+**Table 4. Control signal usage in LVCMOS slave FIFO state machine for Port 0**
 
 EZ-USB&trade; FX pin            | Function            | Description
 :-------------    | :------------       | :--------------
@@ -456,7 +465,7 @@ This application's functionality can be customized by setting variables in *Make
 
 By default, the application is configured to receive data from a 32-bit wide LVCMOS interface in DDR mode and make a USB 3.2 Gen2x2 (20 Gbps) data connection. Additional settings can be configured through macros specified by the `DEFINES` variable in *Makefile*:
 
-**Table 4. Macro description**
+**Table 5. Macro description**
 
 Macro name           |    Description                           | Allowed values
 :-------------       | :------------                            | :--------------
@@ -474,6 +483,27 @@ Macro name           |    Description                           | Allowed values
 `USBFS_LOGS_ENABLE`  | Enable debug logs through USBFS port     | '1u' for debug logs over USBFS <br> '0u' for debug logs over UART (SCB1)
 `USB3_LPM_ENABLE`    | Enable USB LPM handling                  | '1u' to enable USB LPM handling <br> '0u' to disable LPM
 `FPGA_CONFIG_EN`     | Enable FPGA configuration                | '1u' to enable FPGA configuration by FX <br> '0u' to disable FPGA configuration using FX device
+`CUSTOM_TRAIN_ENABLE` | Enable improved LVDS PHY training logic        | '1u' to enable firmware based LVDS PHY training logic (refer FX Architecture TRM for more implementation details) <br> '0u' to use default PHY training. Invalid when `LVCMOS_EN` or `LVDS_LB_EN` is set to '1u'
+
+
+## Invalid macro combinations
+
+The following compile-time macro combinations are not supported and will result in a build error:
+
+**Table 6. Invalid macro combinations**
+
+Condition | Error message
+:-------- | :------------
+`LVDS_LB_EN=1` and `FPGA_ENABLE=1` | `LVDS_LB_EN` requires `FPGA_ENABLE` to be '0'
+`LVDS_LB_EN=1` and `UVC_HEADER_BY_FPGA=1` | `LVDS_LB_EN` requires `UVC_HEADER_BY_FPGA` to be '0'
+`PORT1_EN=1` and `INTERLEAVE_EN=1` | Thread interleave is not supported on Port 1
+`LVDS_LB_EN=1` and `INMD_EN=1` | `LVDS_LB_EN` requires `INMD_EN` to be '0'
+`FPGA_ADDS_HEADER=1` and `INMD_EN=1` | `FPGA_ADDS_HEADER` requires `INMD_EN` to be '0'
+`WL_EN=0` and `INMD_EN=1` | Insert metadata (`INMD_EN`) is not supported with Narrow Link
+`LVCMOS_EN=1` and `INMD_EN=1` | Insert metadata (`INMD_EN`) is not supported with LVCMOS
+`LVCMOS_EN=0` and `LVCMOS_DDR_EN=1` | `LVCMOS_DDR_EN` is not applicable when `LVCMOS_EN` is '0' (LVDS mode)
+`LVDS_LB_EN=1` and `CUSTOM_TRAIN_ENABLE=1` | `LVDS_LB_EN` requires `CUSTOM_TRAIN_ENABLE` to be '0'
+`LVCMOS_EN=1` and `CUSTOM_TRAIN_ENABLE=1` | `LVCMOS_EN` requires `CUSTOM_TRAIN_ENABLE` to be '0'
 
 
 ## FPGA configuration
@@ -484,7 +514,7 @@ Ti180 FPGA can be configured using the Efinity tool. For more details, see the [
 
 On every bootup, EZ-USB&trade; FX deasserts the INT_RESET pin.
 
-**Table 5. GPIO for checking FPGA configuration on KIT_FX20_FMC_001 DVK**
+**Table 7. GPIO for checking FPGA configuration on KIT_FX20_FMC_001 DVK**
 
 EZ-USB&trade; FX20 pin          | Function            | Description
 :-------------                  | :------------       | :--------------
@@ -513,7 +543,7 @@ Steps to configure FPGA (in passive serial x4 mode):
 3. FPGA listens to the data on the SMIF lines and configures itself
 4. FPGA asserts CDONE# when the configuration is complete
 
-**Table 6. GPIOs for configuring FPGA on KIT_FX20_FMC_001 DVK**
+**Table 8. GPIOs for configuring FPGA on KIT_FX20_FMC_001 DVK**
 
 EZ-USB&trade; FX20 pin | Function      | Description
 :-------------         | :------------ | :--------------
@@ -524,22 +554,24 @@ P6_4                   | PROG#         | Active low FPGA program signal
 
 ### FPGA bitfile information
 
-**Table 7. Bitfile description**
-Bitfile                                                   | Description                   | Supported features
-:-------------                                            | :------------                 | :------------  
-*fxn_ti180_dvk_multi_cam_ref_des_lvcmos_ddr_nl_p1.hex*    | LVCMOS Port 1 Narrow Link DDR | Port 1 Single Thread, FPGA added header
-*fxn_ti180_dvk_multi_cam_ref_des_lvcmos_sdr_nl_p1.hex*    | LVCMOS Port 1 Narrow Link SDR | Port 1 Single Thread
-*fxn_ti180_dvk_multi_cam_ref_des_lvcmos_ddr_nl_p0.hex*    | LVCMOS Port 0 Narrow Link DDR | Port 0 Single Thread, PORT 0 Thread Interleave, FPGA added header
-*fxn_ti180_dvk_multi_cam_ref_des_lvcmos_ddr_wl.hex*       | LVCMOS WideLink DDR           | Port 0 Single Thread, FPGA added header
-*fxn_ti180_dvk_multi_cam_ref_des_lvcmos_sdr_wl*           | LVCMOS WideLink SDR           | Port 0 Single Thread, PORT 0 Thread Interleave, FPGA added header
-*fxn_ti180_dvk_multi_cam_ref_des_lvds_wl_148m_inmd*       | LVDS WideLink with INMD       | Port 0 Single Thread, INMD added header
-*fxn_ti180_dvk_multi_cam_ref_des_lvds_nl_p0_148m*         | LVDS Port 0 Narrow Link       | Port 0 Single Thread, FPGA added header
+**Table 9. Bitfile description**
+Bitfile                                                          | Description                   | Supported features
+:-------------                                                   | :------------                 | :------------
+*fxn_ti180_dvk_nl_p0_lvcmos_ddr_fout148_5_usbin_v62.hex*        | LVCMOS Port 0 Narrow Link DDR | Port 0 Single Thread, PORT 0 Thread Interleave, FPGA added header
+*fxn_ti180_dvk_nl_p0_lvcmos_sdr_fout148_5_usbin_v62.hex*        | LVCMOS Port 0 Narrow Link SDR | Port 0 Single Thread, PORT 0 Thread Interleave
+*fxn_ti180_dvk_nl_p0_lvds_fout148_5_usbin_v62.hex*              | LVDS Port 0 Narrow Link       | Port 0 Single Thread, FPGA added header
+*fxn_ti180_dvk_nl_p1_lvcmos_ddr_fout148_5_usbin_v62.hex*        | LVCMOS Port 1 Narrow Link DDR | Port 1 Single Thread, FPGA added header
+*fxn_ti180_dvk_nl_p1_lvcmos_sdr_fout148_5_usbin_v62.hex*        | LVCMOS Port 1 Narrow Link SDR | Port 1 Single Thread
+*fxn_ti180_dvk_nl_p1_lvds_fout148_5_usbin_v62.hex*              | LVDS Port 1 Narrow Link       | Port 1 Single Thread, FPGA added header
+*fxn_ti180_dvk_wl_lvcmos_ddr_fout148_5_usbin_v62.hex*           | LVCMOS WideLink DDR           | Port 0 Single Thread, FPGA added header
+*fxn_ti180_dvk_wl_lvcmos_sdr_fout148_5_usbin_v62.hex*           | LVCMOS WideLink SDR           | Port 0 Single Thread, PORT 0 Thread Interleave, FPGA added header
+*fxn_ti180_dvk_wl_lvds_fout148_5_usbin_v62.hex*                 | LVDS WideLink                 | Port 0 Single Thread, FPGA added header
 
 
 
 ## Application files
 
-**Table 8. Application file description**
+**Table 10. Application file description**
 
 File                                              |    Description
 :-------------                                    | :------------
@@ -592,6 +624,7 @@ Document title: *CE240865* – *EZ-USB&trade; FX20: USB Video Class (UVC) applic
  1.0.1   | Updated to use USBFXStack v1.1 from GitHub
  1.0.2   | Updated to use USBFXStack v1.2 from GitHub
  1.0.3   | Updated to use USBFXStack v1.3 from GitHub <br> Added capability to stream data from RAM buffers <br> Enabled porting of application to other EZ-USB&trade; FX devices
+ 1.0.4   | Updated to use USBFXStack v1.3.2 from GitHub <br> Added support for firmware-based LVDS PHY training
 
 <br>
 
@@ -604,7 +637,7 @@ PSOC&trade;, formerly known as PSoC&trade;, is a trademark of Infineon Technolog
 
 ---------------------------------------------------------
 
-© Cypress Semiconductor Corporation, 2024-2025. This document is the property of Cypress Semiconductor Corporation, an Infineon Technologies company, and its affiliates ("Cypress").  This document, including any software or firmware included or referenced in this document ("Software"), is owned by Cypress under the intellectual property laws and treaties of the United States and other countries worldwide.  Cypress reserves all rights under such laws and treaties and does not, except as specifically stated in this paragraph, grant any license under its patents, copyrights, trademarks, or other intellectual property rights.  If the Software is not accompanied by a license agreement and you do not otherwise have a written agreement with Cypress governing the use of the Software, then Cypress hereby grants you a personal, non-exclusive, nontransferable license (without the right to sublicense) (1) under its copyright rights in the Software (a) for Software provided in source code form, to modify and reproduce the Software solely for use with Cypress hardware products, only internally within your organization, and (b) to distribute the Software in binary code form externally to end users (either directly or indirectly through resellers and distributors), solely for use on Cypress hardware product units, and (2) under those claims of Cypress's patents that are infringed by the Software (as provided by Cypress, unmodified) to make, use, distribute, and import the Software solely for use with Cypress hardware products.  Any other use, reproduction, modification, translation, or compilation of the Software is prohibited.
+© Cypress Semiconductor Corporation, 2025-2026. This document is the property of Cypress Semiconductor Corporation, an Infineon Technologies company, and its affiliates ("Cypress").  This document, including any software or firmware included or referenced in this document ("Software"), is owned by Cypress under the intellectual property laws and treaties of the United States and other countries worldwide.  Cypress reserves all rights under such laws and treaties and does not, except as specifically stated in this paragraph, grant any license under its patents, copyrights, trademarks, or other intellectual property rights.  If the Software is not accompanied by a license agreement and you do not otherwise have a written agreement with Cypress governing the use of the Software, then Cypress hereby grants you a personal, non-exclusive, nontransferable license (without the right to sublicense) (1) under its copyright rights in the Software (a) for Software provided in source code form, to modify and reproduce the Software solely for use with Cypress hardware products, only internally within your organization, and (b) to distribute the Software in binary code form externally to end users (either directly or indirectly through resellers and distributors), solely for use on Cypress hardware product units, and (2) under those claims of Cypress's patents that are infringed by the Software (as provided by Cypress, unmodified) to make, use, distribute, and import the Software solely for use with Cypress hardware products.  Any other use, reproduction, modification, translation, or compilation of the Software is prohibited.
 <br>
 TO THE EXTENT PERMITTED BY APPLICABLE LAW, CYPRESS MAKES NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, WITH REGARD TO THIS DOCUMENT OR ANY SOFTWARE OR ACCOMPANYING HARDWARE, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  No computing device can be absolutely secure.  Therefore, despite security measures implemented in Cypress hardware or software products, Cypress shall have no liability arising out of any security breach, such as unauthorized access to or use of a Cypress product. CYPRESS DOES NOT REPRESENT, WARRANT, OR GUARANTEE THAT CYPRESS PRODUCTS, OR SYSTEMS CREATED USING CYPRESS PRODUCTS, WILL BE FREE FROM CORRUPTION, ATTACK, VIRUSES, INTERFERENCE, HACKING, DATA LOSS OR THEFT, OR OTHER SECURITY INTRUSION (collectively, "Security Breach").  Cypress disclaims any liability relating to any Security Breach, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any Security Breach.  In addition, the products described in these materials may contain design defects or errors known as errata which may cause the product to deviate from published specifications. To the extent permitted by applicable law, Cypress reserves the right to make changes to this document without further notice. Cypress does not assume any liability arising out of the application or use of any product or circuit described in this document. Any information provided in this document, including any sample design information or programming code, is provided only for reference purposes.  It is the responsibility of the user of this document to properly design, program, and test the functionality and safety of any application made of this information and any resulting product.  "High-Risk Device" means any device or system whose failure could cause personal injury, death, or property damage.  Examples of High-Risk Devices are weapons, nuclear installations, surgical implants, and other medical devices.  "Critical Component" means any component of a High-Risk Device whose failure to perform can be reasonably expected to cause, directly or indirectly, the failure of the High-Risk Device, or to affect its safety or effectiveness.  Cypress is not liable, in whole or in part, and you shall and hereby do release Cypress from any claim, damage, or other liability arising from any use of a Cypress product as a Critical Component in a High-Risk Device. You shall indemnify and hold Cypress, including its affiliates, and its directors, officers, employees, agents, distributors, and assigns harmless from and against all claims, costs, damages, and expenses, arising out of any claim, including claims for product liability, personal injury or death, or property damage arising from any use of a Cypress product as a Critical Component in a High-Risk Device. Cypress products are not intended or authorized for use as a Critical Component in any High-Risk Device except to the limited extent that (i) Cypress's published data sheet for the product explicitly states Cypress has qualified the product for use in a specific High-Risk Device, or (ii) Cypress has given you advance written authorization to use the product as a Critical Component in the specific High-Risk Device and you have signed a separate indemnification agreement.
 <br>

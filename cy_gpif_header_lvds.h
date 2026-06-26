@@ -20,6 +20,8 @@
 extern "C" {
 #endif
 
+#include "cy_lvds.h"
+
 #define START_STATE_ID    (0)
 #define ALPHA_START_STATE (0x00)
 
@@ -32,7 +34,6 @@ const cy_stc_lvds_gpif_wavedata_t cy_lvds_gpif0_wavedata[] = {
 uint16_t cy_lvds_gpif0_transition[] = {0x0000, 0x5555, 0x8888, 0x7777, 0xAAAA, 0xF0F0};
 
 uint8_t cy_lvds_gpif0_wavedata_position[] = {0, 1, 0, 2, 0};
-
 
 const cy_stc_lvds_gpif_reg_data_t cy_lvds_gpif0_reg_data[] = {
     {0x00000000, 0x00030000}, /* GPIF_CONFIG */
@@ -49,10 +50,11 @@ const cy_stc_lvds_gpif_reg_data_t cy_lvds_gpif0_reg_data[] = {
     {0x00000038, 0x00000000}, /* GPIF_INTR_MASKED */
     {0x0000003C, 0x00000000}, /* GPIF_INTR_SET */
     {0x00000050, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_0 */
+    {0x00000054, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_1 */
     {0x00000058, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_2 */
     {0x0000005C, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_3 */
     {0x00000060, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_4 */
-    {0x00000064, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_5 */
+    {0x00000064, 0x00000002}, /* GPIF_CTRL_BUS_DIRECTION_5 */
     {0x00000068, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_6 */
     {0x0000006C, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_7 */
     {0x00000070, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_8 */
@@ -68,17 +70,14 @@ const cy_stc_lvds_gpif_reg_data_t cy_lvds_gpif0_reg_data[] = {
     {0x00000098, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_18 */
     {0x0000009C, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_19 */
     {0x000000B0, 0x00000000}, /* GPIF_CTRL_BUS_DEFAULT */
+    {0x000000B4, 0x00000020}, /* GPIF_CTRL_BUS_POLARITY */
     {0x000000B8, 0x00000000}, /* GPIF_CTRL_BUS_TOGGLE */
     {0x00000100, 0x00000000}, /* GPIF_CTRL_BUS_SELECT0 */
-    {0x00000108, 0x00000000}, /* GPIF_CTRL_BUS_SELECT2 */
-
-    {0x000000B4, 0x00000020}, /* GPIF_CTRL_BUS_POLARITY */ 
     {0x00000104, 0x00000000}, /* GPIF_CTRL_BUS_SELECT1 */
-    {0x00000114, 0x00000018}, /* GPIF_CTRL_BUS_SELECT5 */ 
-    {0x00000054, 0x00000000}, /* GPIF_CTRL_BUS_DIRECTION_1 */
-    {0x00000064, 0x00000002}, /* GPIF_CTRL_BUS_DIRECTION_5 */
+    {0x00000108, 0x00000000}, /* GPIF_CTRL_BUS_SELECT2 */
     {0x0000010C, 0x00000000}, /* GPIF_CTRL_BUS_SELECT3 */
     {0x00000110, 0x00000000}, /* GPIF_CTRL_BUS_SELECT4 */
+    {0x00000114, 0x00000018}, /* GPIF_CTRL_BUS_SELECT5 */  /* CTL[5] -> DMA_READY or FULL_FLAG or FLAGA */
     {0x00000118, 0x00000000}, /* GPIF_CTRL_BUS_SELECT6 */
     {0x0000011C, 0x00000000}, /* GPIF_CTRL_BUS_SELECT7 */
     {0x00000120, 0x00000000}, /* GPIF_CTRL_BUS_SELECT8 */
@@ -143,26 +142,27 @@ cy_stc_lvds_phy_config_t cy_lvds_phy0_config = {
 #if WL_EN
     .wideLink            = 1u,
     .dataBusWidth        = CY_LVDS_PHY_LVDS_MODE_NUM_LANE_16,
-    .linkTrainingPattern = LINK_TRAINING_PATTERN_BYTE,
 #else
-    .wideLink = 0u,
+    .wideLink            = 0u,
     .dataBusWidth        = CY_LVDS_PHY_LVDS_MODE_NUM_LANE_8,
-    .linkTrainingPattern = LINK_TRAINING_PATTERN_BYTE,
 #endif
     .modeSelect          = CY_LVDS_PHY_MODE_LVDS,
     .gearingRatio        = CY_LVDS_PHY_GEAR_RATIO_8_1,
+    .linkTrainingPattern = LINK_TRAINING_PATTERN_BYTE,
 #if LVDS_LB_EN
     .clkSrc              = CY_LVDS_GPIF_CLOCK_USB2,
     .clkDivider          = CY_LVDS_GPIF_CLOCK_DIV_4,
     .loopbackModeEn      = true,
     .isPutLoopbackMode   = true,
     .interfaceClock      = CY_LVDS_PHY_INTERFACE_CLK_625_MHZ,
+    .interfaceClock_kHz  = 625000UL,
 #else
     .clkSrc              = CY_LVDS_GPIF_CLOCK_USB2,
     .clkDivider          = CY_LVDS_GPIF_CLOCK_DIV_2,
     .loopbackModeEn      = false,
     .isPutLoopbackMode   = false,
     .interfaceClock      = CY_LVDS_PHY_INTERFACE_CLK_148_5_MHZ,
+    .interfaceClock_kHz  = 148500UL,
 #endif /* LVDS_LB_EN */
     .slaveFifoMode       = CY_LVDS_NORMAL_MODE,
     .ctrlBusBitMap       = 0x00000000,

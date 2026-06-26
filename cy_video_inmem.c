@@ -6,7 +6,7 @@
 *
 *******************************************************************************
 * \copyright
-* (c) (2021-2024), Cypress Semiconductor Corporation (an Infineon company) or
+* (c) (2026), Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -426,20 +426,12 @@ Cy_UvcInMem_CommitBuffers (
             bufStat.count   = UVC_INMEM_BUF_SIZE;
         }
 
-        if (pAppCtxt->devSpeed > CY_USBD_USB_DEV_HS) {
-            dmaStat = Cy_HBDma_Channel_CommitBuffer(pChannel, &bufStat);
-            if (dmaStat != CY_HBDMA_MGR_SUCCESS) {
-                DBG_APP_ERR("CommitBuf fail code=%x\r\n", dmaStat);
-                Cy_USB_USBD_EndpSetClearNakNrdy(pAppCtxt->pUsbdCtxt, pAppCtxt->uvcInEpNum, CY_USB_ENDP_DIR_IN, false);
-                Cy_SysLib_ExitCriticalSection(intrState);
-                return;
-            }
-        } else {
-            Cy_USB_AppQueueWrite(pAppCtxt, pAppCtxt->uvcInEpNum, bufStat.pBuffer, bufStat.count);
-            i = 1;
-
-            /* We can only queue one buffer in USB-HS case. */
-            break;
+        dmaStat = Cy_HBDma_Channel_CommitBuffer(pChannel, &bufStat);
+        if (dmaStat != CY_HBDMA_MGR_SUCCESS) {
+            DBG_APP_ERR("CommitBuf fail code=%x\r\n", dmaStat);
+            Cy_USB_USBD_EndpSetClearNakNrdy(pAppCtxt->pUsbdCtxt, pAppCtxt->uvcInEpNum, CY_USB_ENDP_DIR_IN, false);
+            Cy_SysLib_ExitCriticalSection(intrState);
+            return;
         }
     }
 
@@ -565,11 +557,7 @@ Cy_UvcInMem_DmaCallback (
         }
     }
 
-    if (pAppCtxt->devSpeed > CY_USBD_USB_DEV_HS) {
-        Cy_HBDma_Channel_CommitBuffer(handle, &bufStat);
-    } else {
-        Cy_USB_AppQueueWrite(pAppCtxt, pAppCtxt->uvcInEpNum, bufStat.pBuffer, bufStat.count);
-    }
+    Cy_HBDma_Channel_CommitBuffer(handle, &bufStat);
 }
 
 #endif /* UVC_INMEM_EN */

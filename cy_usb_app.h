@@ -6,7 +6,7 @@
 *
 *******************************************************************************
 * \copyright
-* (c) (2024), Cypress Semiconductor Corporation (an Infineon company) or
+* (c) (2026), Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -30,6 +30,7 @@
 #include "cy_pdl.h"
 #include "cy_debug.h"
 #include "cy_usbhs_dw_wrapper.h"
+#include "cy_lvds.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -66,6 +67,7 @@ extern "C" {
 #define CLR_BIT(byte, mask)                (byte) &= ~(mask)
 #define CHK_BIT(byte, mask)                (byte) & (mask)
 
+#define FX_DMA_RDY_IO                   (CY_LVDS_PHY_GPIO_CTL5) /* LVCMOS IO used as DMA-Ready signal to FPGA. */
 
 #if !LVDS_LB_EN
 
@@ -105,7 +107,7 @@ extern "C" {
 #define LINK_READY_CTL_PORT             (PORT1_EN)
 #define LINK_READY_CTL_PIN              (cy_en_lvds_phy_gpio_index_t)(16+6)
 
-#else 
+#else
 
 #define MANUAL_DMA_CHANNEL              (1)
 #define UVC_HEADER_BY_FX                (1)
@@ -115,37 +117,44 @@ extern "C" {
 #endif /*LVDS_LB_EN*/
 
 #if (LVDS_LB_EN && FPGA_ENABLE)
-#error LOG_COLOR(RED, "INVALID: LVDS_LB_EN WITH FPGA_ENABLE");
+#error "INVALID CONFIGURATION: LVDS_LB_EN needs FPGA_ENABLE to be 0"
 #endif /* LVDS_LB_EN && FPGA_ENABLE */
 
 #if (UVC_HEADER_BY_FPGA && LVDS_LB_EN)
-#error LOG_COLOR(RED, "INVALID: LOOPBACK WITH UVC_HEADER_BY_FPGA");
+#error "INVALID CONFIGURATION: LVDS_LB_EN needs UVC_HEADER_BY_FPGA to be 0"
 #endif /* UVC_HEADER_BY_FPGA && LVDS_LB_EN */
 
 #if (PORT1_EN && INTERLEAVE_EN)
-#error LOG_COLOR(RED, "INVALID: INTERLEAVE NOT SUPPORTED BY PORT1");
+#error "INVALID CONFIGURATION: INTERLEAVE NOT SUPPORTED BY PORT1"
 #endif /* PORT1_EN && INTERLEAVE_EN */
 
 #if (LVDS_LB_EN && INMD_EN)
-#error LOG_COLOR(RED, "INVALID: LVDS_LB_EN WITH INMD ");
+#error "INVALID CONFIGURATION: LVDS_LB_EN needs INMD to be 0"
 #endif /* LVDS_LB_EN && INMD_EN */
 
 #if (FPGA_ADDS_HEADER && INMD_EN)
-#error LOG_COLOR(RED, "INVALID: FPGA_ADDS_HEADER WITH INMD_EN");
+#error "INVALID CONFIGURATION: FPGA_ADDS_HEADER needs INMD_EN to be 0"
 #endif /* FPGA_ADDS_HEADER && INMD_EN */
 
 #if ((!WL_EN) && INMD_EN)
-#error LOG_COLOR(RED, "INVALID: INMD WITH NARROW LINK");
+#error "INVALID CONFIGURATION: INMD WITH NARROW LINK"
 #endif /* WL_EN && INMD_EN*/
 
 #if (LVCMOS_EN && INMD_EN)
-#error LOG_COLOR(RED, "INVALID: INMD WITH LVCMOS_EN");
+#error "INVALID CONFIGURATION: INMD WITH LVCMOS_EN"
 #endif /* WL_EN && INMD_EN*/
 
 #if ((!LVCMOS_EN) && LVCMOS_DDR_EN)
-#error LOG_COLOR(RED, "INVALID: LVCMOS_DDR_EN WITH LVDS");
+#error "INVALID CONFIGURATION: LVCMOS_DDR_EN WITH LVDS"
 #endif /* WL_EN && INMD_EN*/
 
+#if (LVDS_LB_EN && CUSTOM_TRAIN_ENABLE)
+#error "INVALID: LVDS_LB_EN requires CUSTOM_TRAIN_ENABLE to be 0"
+#endif /* LVDS_LB_EN && CUSTOM_TRAIN_ENABLE */
+
+#if (LVCMOS_EN && CUSTOM_TRAIN_ENABLE)
+#error "INVALID: LVCMOS_EN requires CUSTOM_TRAIN_ENABLE to be 0"
+#endif /* LVCMOS_EN && CUSTOM_TRAIN_ENABLE */
 
 #define DMA_BUFFER_SIZE                 (CY_USB_UVC_STREAM_BUF_SIZE)
 #if UVC_HEADER_BY_FX
@@ -199,7 +208,7 @@ extern "C" {
 typedef struct cy_stc_usb_app_ctxt_ cy_stc_usb_app_ctxt_t;
 
 /* USBD layer return code shared between USBD layer and Application layer. */
-typedef enum cy_en_usb_app_ret_code_ 
+typedef enum cy_en_usb_app_ret_code_
 {
     CY_USB_APP_STATUS_SUCCESS=0,
     CY_USB_APP_STATUS_FAILURE,
@@ -235,7 +244,6 @@ struct cy_stc_usb_app_ctxt_
 
     /* UVC specific fields. */
     uint8_t uvcInEpNum;                         /** Index of UVC streaming endpoint. */
-    uint8_t uvcPendingBufCnt;                   /** Number of data buffers which are pending to be streamed. */
     bool uvcFlowCtrlFlag;                       /** Flag indicating that UVC channel is in flow control. */
 
     /* Global Task handles */
@@ -259,14 +267,12 @@ struct cy_stc_usb_app_ctxt_
     uint8_t *pPDMRxBuffer[PDM_APP_BUFFER_CNT];  /** Pointer of buffers to read PDM data into. */
     uint16_t pdmRxDataLen[PDM_APP_BUFFER_CNT];  /** Amount of data in each PDM RX buffer. */
     uint8_t  pdmRxBufIndex;                     /** Index of current PDM read buffer. */
-    uint8_t  nxtAudioTxBufIndex;                /** Index of next audio buffer to be sent on USB EP. */
     uint8_t  pdmRxFreeBufCount;                 /** Number of free PDM RX buffers. */
-    bool     pdmInXferPending;                  /** Whether a write has been queued on IN EP. */
     uint8_t  pdmPendingDmaFlag;                 /** Flag indicating whether DMA transfer is pending on
                                                     each PDM RX channel. */
     TaskHandle_t  uacAppTaskHandle;             /** Handle to the UAC application task. */
     QueueHandle_t uacMsgQueue;                  /** Handle to UAC application message queue. */
-    TimerHandle_t pdmActivateTimer;             /** Handle of timer used to activate PDM channels. */ 
+    TimerHandle_t pdmActivateTimer;             /** Handle of timer used to activate PDM channels. */
 #endif /* AUDIO_IF_EN */
 
     TimerHandle_t fpsTimer;
@@ -286,6 +292,9 @@ struct cy_stc_usb_app_ctxt_
     volatile uint8_t glPrintFlag;
     volatile uint32_t glFrameCount;
     volatile uint32_t glPartialBufSize;
+
+    bool              isLvdsWltoUsbHs;                  /* Whether we are streaming from LVDS WideLink to USBHS. */
+    bool              fwDmaReadyStatus;                 /* Firmware based DMA ready status. */
 };
 
 typedef struct
@@ -333,10 +342,10 @@ typedef enum cy_en_fpgaRegMap_t
     FPGA_LVDS_LINK_TRAINING_BLK_P1_ADDRESS = 0x05,
     FPGA_LVDS_LINK_TRAINING_BLK_P2_ADDRESS = 0x06,
     FPGA_LVDS_LINK_TRAINING_BLK_P3_ADDRESS = 0x07,
-    
+
     FPGA_ACTIVE_DIVICE_MASK_ADDRESS        = 0x08,
     FPGA_LOW_PWR_MODE_ADDRESS              = 0x09,
-    
+
     FPGA_PHY_LINK_CONTROL_ADDRESS          = 0x0A,
     FPGA_TRAINING_DISABLE                  = 0x00,
     FPGA_PHY_CONTROL                       = 0x01, // PHY Training is required
@@ -352,6 +361,10 @@ typedef enum cy_en_fpgaRegMap_t
     DDR_CMD_QUEUE_FULL_STATUS              = 0x08, // Command queue full status
     DATPATH_IDLE_STATUS                    = 0x10, // Datapath is idle or not
 
+    FPGA_LVDS_GEAR_RATIO_CONTROL_ADDRESS   = 0x0D,
+    LVDS_GEAR_RATIO_625_2_1                = 2,
+    LVDS_GEAR_RATIO_312P5_4_1              = 4,
+    LVDS_GEAR_RATIO_148P5_8_1             = 8,
 
     /*Device related Info*/
     DEVICE0_OFFSET                         = 0x20,
@@ -380,7 +393,7 @@ typedef enum cy_en_fpgaRegMap_t
     DEVICE_IMAGE_HEIGHT_MSB_ADDRESS        = 0x03,
     DEVICE_IMAGE_WIDTH_LSB_ADDRESS         = 0x04,
     DEVICE_IMAGE_WIDTH_MSB_ADDRESS         = 0x05,
-    
+
     DEVICE_FPS_ADDRESS                     = 0x06,
 
     DEVICE_PIXEL_WIDTH_ADDRESS             = 0x07,
@@ -449,11 +462,11 @@ extern cy_stc_hbdma_channel_t lvdsLbPgmChannel;
 extern uint8_t glPhyLinkTrainControl;
 
 /*****************************************************************************
-* Function Name: Cy_LVDS_InitLbPgm(cy_stc_hbdma_buff_status_t *buffStat, 
+* Function Name: Cy_LVDS_InitLbPgm(cy_stc_hbdma_buff_status_t *buffStat,
                                     cy_stc_lvds_loopback_config_t *lbPgmConfig)
 ******************************************************************************
 * Summary:
-* Function to initialize Link Looback 
+* Function to initialize Link Looback
 *
 * \param buffStat
 * HBDMA buffer status
@@ -476,7 +489,7 @@ void Cy_LVDS_InitLbPgm(cy_stc_hbdma_buff_status_t *buffStat, cy_stc_lvds_loopbac
 *
 * \param handle
 * HBDMA channel handle
-* 
+*
 * \param cy_en_hbdma_cb_type_t
 * HBDMA channel type
 *
@@ -541,7 +554,7 @@ void Cy_USB_AppInit(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_stc_usb_usbd_ctxt_t *pUs
 void Cy_USB_AppRegisterCallback(cy_stc_usb_app_ctxt_t *pAppCtxt);
 
 /****************************************************************************
-* Function Name: Cy_USB_AppSetCfgCallback(void *pUserCtxt, 
+* Function Name: Cy_USB_AppSetCfgCallback(void *pUserCtxt,
                                         cy_stc_usb_usbd_ctxt_t *pUsbdCtxt,
                                         cy_stc_usb_cal_msg_t *pMsg)
 ******************************************************************************
@@ -766,7 +779,7 @@ void Cy_USB_AppL1SleepCallback(void *pAppCtxt, cy_stc_usb_usbd_ctxt_t *pUsbdCtxt
 *
 ********************************************************************************/
 void Cy_USB_AppL1ResumeCallback(void *pAppCtxt, cy_stc_usb_usbd_ctxt_t *pUsbdCtxt, cy_stc_usb_cal_msg_t *pMsg);
- 
+
 /*******************************************************************************
 * Function name: Cy_USB_AppZlpCallback(void *pUsbApp, cy_stc_usb_usbd_ctxt_t *pUsbdCtxt,
                            cy_stc_usb_cal_msg_t *pMsg)
@@ -856,7 +869,7 @@ void Cy_USB_AppSetFeatureCallback(void *pUsbApp, cy_stc_usb_usbd_ctxt_t *pUsbdCt
 void Cy_USB_AppClearFeatureCallback(void *pUsbApp, cy_stc_usb_usbd_ctxt_t *pUsbdCtxt, cy_stc_usb_cal_msg_t *pMsg);
 
 /*******************************************************************************
-* Function name: CyApp_RegisterUsbDescriptors(cy_stc_usb_app_ctxt_t *pAppCtxt, 
+* Function name: CyApp_RegisterUsbDescriptors(cy_stc_usb_app_ctxt_t *pAppCtxt,
                                               cy_en_usb_speed_t usbSpeed)
 ****************************************************************************//**
 *
@@ -873,31 +886,6 @@ void Cy_USB_AppClearFeatureCallback(void *pUsbApp, cy_stc_usb_usbd_ctxt_t *pUsbd
 *
 ********************************************************************************/
 void CyApp_RegisterUsbDescriptors(cy_stc_usb_app_ctxt_t *pAppCtxt, cy_en_usb_speed_t usbSpeed);
-
-/*******************************************************************************
-* Function name: Cy_USB_AppQueueWrite(cy_stc_usb_app_ctxt_t *pAppCtxt, uint8_t endpNumber,
-                          uint8_t *pBuffer, uint32_t dataSize)
-****************************************************************************//**
-*
-* Queue USBHS Write on the USB endpoint
-*
-* \param pAppCtxt
-* application layer context pointer.
-*
-* \param endpNumber
-* Endpoint number
-*
-* \param pBuffer
-* Data Buffer Pointer
-*
-* \param dataSize
-* DataSize to send on USB bus
-*
-* \return
-* None
-*
-********************************************************************************/
-void Cy_USB_AppQueueWrite(cy_stc_usb_app_ctxt_t *pAppCtxt, uint8_t endpNumber, uint8_t *pBuffer, uint32_t dataSize);
 
 /*******************************************************************************
 * Function name: Cy_USB_AppInitDmaIntr(uint32_t endpNumber, cy_en_usb_endp_dir_t endpDirection,
@@ -921,50 +909,12 @@ void Cy_USB_AppQueueWrite(cy_stc_usb_app_ctxt_t *pAppCtxt, uint8_t endpNumber, u
 ********************************************************************************/
 void Cy_USB_AppInitDmaIntr(uint32_t endpNumber, cy_en_usb_endp_dir_t endpDirection, cy_israddress userIsr);
 
-/*******************************************************************************
-* Function name: Cy_USB_AppClearDmaInterrupt(cy_stc_usb_app_ctxt_t *pAppCtxt,
-                                 uint32_t endpNumber, cy_en_usb_endp_dir_t endpDirection)
-****************************************************************************//**
-*
-* Clear DMA Interrupt
-*
-* \param pAppCtxt
-* application layer context pointer.
-*
-* \param endpNumber
-* Endpoint number
-*
-* \param endpDirection
-* Endpoint direction
-*
-* \return
-* None
-*
-********************************************************************************/
-void Cy_USB_AppClearDmaInterrupt(cy_stc_usb_app_ctxt_t *pAppCtxt, uint32_t endpNumber, cy_en_usb_endp_dir_t endpDirection);
-
 /*****************************************************************************
-* Function Name: Cy_UVC_AppHandleSendCompletion(cy_stc_usb_app_ctxt_t  *pAppCtxt)
-******************************************************************************
-* Summary:
-* Function that handles DMA transfer completion on the USB-HS BULK-IN
-* endpoint. This is equivalent to the receipt of a cosnume event in the USB-SS use
-* case.
-*
-* \param pAppCtxt
-* application layer context pointer.
-*
-* \return
-* None
-*
- *******************************************************************************/
-void Cy_UVC_AppHandleSendCompletion(cy_stc_usb_app_ctxt_t *pUsbApp);
-
-/*****************************************************************************
- * Function Name: Cy_U3V_CommandChannel_ISR(void)
+ * Function Name: Cy_UVC_DataWire_ISR(void)
  *****************************************************************************
- * 
- * Handler for interrupts from the DataWire channel used to receive UVC  data
+ *
+ * Handler for DataWire interrupts associated with DMA transfers into
+ * USB-HS Video Streaming endpoint.
  *
  * Parameters:
  *  None
@@ -995,7 +945,7 @@ bool Cy_USB_SSConnectionEnable(cy_stc_usb_app_ctxt_t *pAppCtxt);
  * Summary
  *  PSVP specific USB disconnect function.
  *
- * Parameters: 
+ * Parameters:
  *  \param pAppCtxt
  *  Pointer to application context structure.
  *
@@ -1157,8 +1107,8 @@ void Cy_UAC_AppInit(cy_stc_usb_app_ctxt_t *pAppCtxt);
  * Parameters:
  *  \param pAppCtxt
  * Pointer to application context structure.
- * 
- *  \param dataLength 
+ *
+ *  \param dataLength
  * Length of data (in bytes) to read from each RX FIFO.
  *
  * Return:
@@ -1172,9 +1122,9 @@ void Cy_PDM_AppQueueRead(cy_stc_usb_app_ctxt_t *pAppCtxt, uint32_t dataLength);
  *  Set Interface request handler for the UAC audio streaming interface.
  *
  * Parameters:
- *  \param pAppCtxt 
+ *  \param pAppCtxt
  * Pointer to the application context structure.
- * 
+ *
  *  \param altSetting
  * Selected alternate setting for the audio streaming interface.
  *
@@ -1184,7 +1134,7 @@ void Cy_PDM_AppQueueRead(cy_stc_usb_app_ctxt_t *pAppCtxt, uint32_t dataLength);
 void Cy_UAC_AppSetIntfHandler(cy_stc_usb_app_ctxt_t *pAppCtxt, uint8_t altSetting);
 
 /*****************************************************************************
-* Function Name: Cy_USB_AppPrintUsbEventLog(cy_stc_usb_app_ctxt_t *pAppCtxt, 
+* Function Name: Cy_USB_AppPrintUsbEventLog(cy_stc_usb_app_ctxt_t *pAppCtxt,
                                             cy_stc_usbss_cal_ctxt_t *pSSCal)
 ******************************************************************************
 * Summary:
@@ -1282,7 +1232,7 @@ void Cy_CheckStatusAndHandleFailure(const char *function, uint32_t line, uint8_t
 *  I2C wRites to FPGA to set up Phy & Link trianing patterns
 *
 * Parameters:
-* 
+*
 *
 * Return:
 *  0 for read success, error code for unsuccess.
@@ -1400,6 +1350,21 @@ Cy_UvcInMem_DmaCallback(
         cy_en_hbdma_cb_type_t       type,
         cy_stc_hbdma_buff_status_t *pbufStat,
         void                       *userCtx);
+
+/*****************************************************************************
+* Function Name: Cy_App_GetLvdsPhyConfig(void)
+******************************************************************************
+* Summary:
+* Returns a pointer to the LVDS PHY configuration structure. Safe to call
+* before Cy_LVDS_Init() to access PHY parameters prior to LVDS initialization.
+*
+* \param None
+*
+* \return
+* Pointer to cy_stc_lvds_phy_config_t containing the LVDS PHY configuration.
+*
+*******************************************************************************/
+const cy_stc_lvds_phy_config_t *Cy_App_GetLvdsPhyConfig(void);
 
 #if defined(__cplusplus)
 }

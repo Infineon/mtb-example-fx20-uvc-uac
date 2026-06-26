@@ -1,0 +1,372 @@
+{
+    "actions": [
+    ],
+    "edges": [
+        {
+            "controlX": -191,
+            "controlY": 122.5,
+            "customCtrl": false,
+            "endID": 3,
+            "equation": "CE & WE & !PKTEND & !RD & !OE",
+            "startID": 6
+        },
+        {
+            "controlX": -574,
+            "controlY": 261.8333333333333,
+            "customCtrl": false,
+            "endID": 2,
+            "equation": "CE & RD & OE & !WE & !PKTEND",
+            "startID": 6
+        },
+        {
+            "controlX": -647.8333333333334,
+            "controlY": 48.66666666666666,
+            "customCtrl": false,
+            "endID": 5,
+            "equation": "CE & PKTEND & !WE & !OE & !RD",
+            "startID": 6
+        },
+        {
+            "controlX": -575.6666666666666,
+            "controlY": -315.5,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "!PKTEND",
+            "startID": 5
+        },
+        {
+            "controlX": -278.5,
+            "controlY": -30.666666666666668,
+            "customCtrl": false,
+            "endID": 6,
+            "equation": "CE & !WE & !RD & !OE & !PKTEND",
+            "startID": 1
+        },
+        {
+            "controlX": -114.5,
+            "controlY": -88.66666666666667,
+            "customCtrl": false,
+            "endID": 3,
+            "equation": "CE & WE & !PKTEND & !RD & !OE",
+            "startID": 1
+        },
+        {
+            "controlX": -254.5,
+            "controlY": 17.66666666666667,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "!CE | (!WE & !PKTEND)",
+            "startID": 3
+        },
+        {
+            "controlX": -420.5,
+            "controlY": -34.333333333333336,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "CE & !WE & !RD & !OE & !PKTEND",
+            "startID": 6
+        },
+        {
+            "controlX": -149.16666666666666,
+            "controlY": -312.6666666666667,
+            "customCtrl": false,
+            "endID": 4,
+            "equation": "CE & PKTEND & WE & !OE & !RD",
+            "startID": 1
+        },
+        {
+            "controlX": -147.83333333333334,
+            "controlY": -182.33333333333331,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "!CE | !WE | !PKTEND",
+            "startID": 4
+        },
+        {
+            "controlX": -59.66666666666667,
+            "controlY": -49.5,
+            "customCtrl": false,
+            "endID": 4,
+            "equation": "CE & WE & PKTEND & !RD",
+            "startID": 3
+        },
+        {
+            "controlX": -497.5,
+            "controlY": 50.66666666666667,
+            "customCtrl": false,
+            "endID": 2,
+            "equation": "CE & RD & OE & !WE & !PKTEND",
+            "startID": 1
+        },
+        {
+            "controlX": -644.5,
+            "controlY": -100.66666666666667,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "!CE | !RD | !OE",
+            "startID": 2
+        },
+        {
+            "controlX": -571.3333333333334,
+            "controlY": -162.5,
+            "customCtrl": false,
+            "endID": 5,
+            "equation": "CE & PKTEND & !WE & !OE & !RD",
+            "startID": 1
+        },
+        {
+            "controlX": -312,
+            "controlY": -346.5,
+            "customCtrl": false,
+            "endID": 1,
+            "equation": "LOGIC_ONE",
+            "startID": 0
+        },
+        {
+            "controlX": -225.66666666666669,
+            "controlY": -101.50000000000001,
+            "customCtrl": false,
+            "endID": 4,
+            "equation": "CE & PKTEND & WE & !OE & !RD",
+            "startID": 6
+        }
+    ],
+    "states": [
+        {
+            "actions": [
+                {
+                    "alpha": 4,
+                    "beta": 0,
+                    "group": 2,
+                    "name": "IN_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_sink": "Socket",
+                        "sample_data": true,
+                        "thread_num": "Thread0",
+                        "write_data": false
+                    }
+                },
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                },
+                {
+                    "alpha": 0,
+                    "beta": 1073741824,
+                    "group": 4,
+                    "name": "COMMIT",
+                    "type": 1,
+                    "values": {
+                        "thread_num": "Thread0"
+                    }
+                }
+            ],
+            "id": 5,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": false,
+            "title": "ZLP",
+            "type": 1,
+            "x": -878,
+            "y": -298
+        },
+        {
+            "actions": [
+                {
+                    "alpha": 3,
+                    "beta": 0,
+                    "group": 3,
+                    "name": "DR_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_source": "other_source",
+                        "other_source": "Socket",
+                        "rm_data": true,
+                        "thread_num": "Thread0",
+                        "update_val": true
+                    }
+                },
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                }
+            ],
+            "id": 2,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": true,
+            "title": "READ",
+            "type": 1,
+            "x": -873,
+            "y": 130
+        },
+        {
+            "actions": [
+                {
+                    "alpha": 4,
+                    "beta": 0,
+                    "group": 2,
+                    "name": "IN_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_sink": "Socket",
+                        "sample_data": true,
+                        "thread_num": "Thread0",
+                        "write_data": false
+                    }
+                },
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                }
+            ],
+            "id": 6,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": true,
+            "title": "DSS",
+            "type": 1,
+            "x": -430,
+            "y": 115
+        },
+        {
+            "actions": [
+                {
+                    "alpha": 4,
+                    "beta": 128,
+                    "group": 2,
+                    "name": "IN_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_sink": "Socket",
+                        "sample_data": true,
+                        "thread_num": "Thread0",
+                        "write_data": true
+                    }
+                },
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                },
+                {
+                    "alpha": 0,
+                    "beta": 1073741824,
+                    "group": 4,
+                    "name": "COMMIT",
+                    "type": 1,
+                    "values": {
+                        "thread_num": "Thread0"
+                    }
+                }
+            ],
+            "id": 4,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": false,
+            "title": "SLP",
+            "type": 1,
+            "x": -28,
+            "y": -315
+        },
+        {
+            "actions": [
+            ],
+            "id": 0,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": true,
+            "title": "START",
+            "type": 0,
+            "x": -422,
+            "y": -512
+        },
+        {
+            "actions": [
+                {
+                    "alpha": 4,
+                    "beta": 0,
+                    "group": 2,
+                    "name": "IN_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_sink": "Socket",
+                        "sample_data": true,
+                        "thread_num": "Thread0",
+                        "write_data": false
+                    }
+                },
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                }
+            ],
+            "id": 1,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": true,
+            "title": "IDLE",
+            "type": 1,
+            "x": -419,
+            "y": -311
+        },
+        {
+            "actions": [
+                {
+                    "alpha": 8,
+                    "beta": 0,
+                    "group": 1,
+                    "name": "IN_ADDR",
+                    "type": 1,
+                    "values": {
+                        "addr_sel": "thread"
+                    }
+                },
+                {
+                    "alpha": 4,
+                    "beta": 128,
+                    "group": 2,
+                    "name": "IN_DATA",
+                    "type": 1,
+                    "values": {
+                        "data_sink": "Socket",
+                        "sample_data": true,
+                        "thread_num": "Thread0",
+                        "write_data": true
+                    }
+                }
+            ],
+            "id": 3,
+            "repeatCount": 0,
+            "repeatUntilNextTransistion": true,
+            "title": "WRITE",
+            "type": 1,
+            "x": -100,
+            "y": 109
+        }
+    ]
+}

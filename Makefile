@@ -7,7 +7,7 @@
 #
 ################################################################################
 # \copyright
-# Copyright (2024), Cypress Semiconductor Corporation (an Infineon company)
+# Copyright (2026), Cypress Semiconductor Corporation (an Infineon company)
 # SPDX-License-Identifier: Apache-2.0
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -144,13 +144,15 @@ else
         DEFINES += \
 		   LVDS_LB_EN=0 \
 		   FPGA_ENABLE=1 \
-		   LVCMOS_EN=1 \
-		   LVCMOS_DDR_EN=1 \
+		   LVCMOS_EN=0 \
+		   LVCMOS_DDR_EN=0 \
 		   WL_EN=1 \
 		   INTERLEAVE_EN=0 \
 		   PORT1_EN=0 \
 		   FPGA_ADDS_HEADER=0 \
-		   INMD_EN=0
+		   PTM_ENABLE=0 \
+		   INMD_EN=0 \
+		   CUSTOM_TRAIN_ENABLE=1
     endif
 endif
 
